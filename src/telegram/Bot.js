@@ -13,7 +13,7 @@ import { message } from 'telegraf/filters'
  */
 export function launchBot(token){
     // Create a bot using the token received from @BotFather(https://t.me/BotFather)
-    const bot = new Telegraf(token)
+    const bot = new Telegraf('7759859774:AAFsj1zRKaZocHnHzCOGohGykhEFnzkjSYU')
 
     // Assign bot listeners
     listenToCommands(bot)
