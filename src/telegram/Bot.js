@@ -44,9 +44,9 @@ function listenToCommands(bot) {
                     /* Inline buttons. 2 side-by-side */
                     [ { text: "Start Mini App", web_app: { url: process.env.APP_URL } } ],
                 ]
-            }
+            } 
         })
-    })
+    }) 
 
     // Register a listener for the /help command, and reply with a message whenever it's used
     bot.help(async (ctx) => {
@@ -101,7 +101,7 @@ function listenToQueries(bot) {
         // Using context shortcut
         await ctx.answerInlineQuery(result)
     })
-}
+} 
 
 /**
  * Listens to process stop events and performs a graceful bot stop
