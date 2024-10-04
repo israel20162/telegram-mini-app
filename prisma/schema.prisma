@@ -4,7 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,23 +14,27 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
 model User {
-  id             Int      @id @default(autoincrement()) // User ID, auto-incremented
-  telegramId     String   @unique                      // User's Telegram ID, must be unique
-  points         Int      @default(0)                  // Points earned by the user
-  invitedFriends User[]   @relation("FriendInvites")    // Array of users (self-relation)
-  completedTasks Task[]   // Array of completed tasks
+  id                 Int    @id @default(autoincrement()) // User ID, auto-incremented
+  telegramId         String @unique // User's Telegram ID, must be unique
+  points             Int    @default(0) // Points earned by the user
+  invitedFriends     User[] @relation("FriendInvites") // Array of users (self-relation)
+  completedTasks     Task[] // Array of completed tasks
+  profitPerHour      Int  @default(0)
+  pointsPerClick     Int    @default(1) // Points generated per click, default is 1
+  energyBar          Int    @default(1000) // Energy bar, starting value is 100
+  upgradeLevelClick  Int    @default(1) // Level of points per click upgrade
+  upgradeLevelEnergy Int    @default(1) // Level of energy bar upgrade
+  upgradeLevelProfit Int    @default(1) // Level of profit per hour upgrade
 
   User User[] @relation("FriendInvites")
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())  // Task ID, auto-incremented
-  name        String                                      // Task name
-  description String?                                     // Task description (optional)
-  completedAt DateTime @default(now())                    // When the task was completed
-  userId      Int                                        // Reference to the User who completed the task
-  user        User      @relation(fields: [userId], references: [id]) // Foreign key to User
+  id          Int      @id @default(autoincrement()) // Task ID, auto-incremented
+  name        String // Task name
+  description String? // Task description (optional)
+  completedAt DateTime @default(now()) // When the task was completed
+  userId      Int // Reference to the User who completed the task
+  user        User     @relation(fields: [userId], references: [id]) // Foreign key to User
 }
-        
