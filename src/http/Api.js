@@ -42,9 +42,9 @@ api.post('/user', async (req, res) => {
             }
         });
 
-        console.log('created user');
+      
 
-        return res.status(201).json({ message: 'User created successfully', user: newUser });
+         res.status(201).json({ message: 'User created successfully', user: newUser });
     } catch (error) {
         res.status(500).json({ error: 'Server error', msg: error });
     }
