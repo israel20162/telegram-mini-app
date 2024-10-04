@@ -9,8 +9,8 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 const PORT = 8000
 var corsOptions = {
-    origin:'*',
-  //  origin: 'http://localhost:5173',
+    origin: '*',
+    //  origin: 'http://localhost:5173',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 export const MESSAGE_PATH = "/message"
@@ -22,7 +22,12 @@ api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
     const { telegramId } = req.body;
-
+    const json = (param) => {
+        return JSON.stringify(
+            param,
+            (key, value) => (typeof value === "bigint" ? value.toString() : value) // return everything else unchanged
+        );
+    };
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
@@ -31,7 +36,7 @@ api.post('/user', async (req, res) => {
         // Check if the user already exists
         let existingUser = await prisma.user.findUnique({ where: { telegramId: telegramId } })
         if (existingUser) {
-            return res.status(400).json({ error: 'User already exists' });
+            return res.status(201).send({ user: { ...existingUser, telegramId: existingUser.telegramId.toString() } });
         }
 
         // Create a new user
@@ -42,10 +47,9 @@ api.post('/user', async (req, res) => {
             }
         });
 
-      
-
-         res.status(201).json({ message: 'User created successfully', user: newUser });
+         res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: newUser.telegramId.toString() } });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
     }
 });
