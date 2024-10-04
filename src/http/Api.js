@@ -9,7 +9,8 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 const PORT = 8000
 var corsOptions = {
-    origin: 'http://localhost:5173',
+    origin:'https://hamster-kombat-telegram-mini-app-clone-odec.vercel.app',
+  //  origin: 'http://localhost:5173',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 export const MESSAGE_PATH = "/message"
@@ -21,7 +22,7 @@ api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
     const { telegramId } = req.body;
-    
+
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
