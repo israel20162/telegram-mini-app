@@ -16,11 +16,11 @@ datasource db {
 
 model User {
   id                 Int    @id @default(autoincrement()) // User ID, auto-incremented
-  telegramId         Int    @unique // User's Telegram ID, must be unique
+  telegramId         BigInt @unique
   points             Int    @default(0) // Points earned by the user
   invitedFriends     User[] @relation("FriendInvites") // Array of users (self-relation)
   completedTasks     Task[] // Array of completed tasks
-  profitPerHour      Int  @default(0)
+  profitPerHour      Int    @default(0)
   pointsPerClick     Int    @default(1) // Points generated per click, default is 1
   energyBar          Int    @default(1000) // Energy bar, starting value is 100
   upgradeLevelClick  Int    @default(1) // Level of points per click upgrade
