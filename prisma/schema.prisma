@@ -16,7 +16,7 @@ datasource db {
 
 model User {
   id                 Int    @id @default(autoincrement()) // User ID, auto-incremented
-  telegramId         String @unique // User's Telegram ID, must be unique
+  telegramId         Int    @unique // User's Telegram ID, must be unique
   points             Int    @default(0) // Points earned by the user
   invitedFriends     User[] @relation("FriendInvites") // Array of users (self-relation)
   completedTasks     Task[] // Array of completed tasks
