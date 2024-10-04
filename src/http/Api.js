@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 const PORT = 8000
 var corsOptions = {
-    origin:'https://hamster-kombat-telegram-mini-app-clone-odec.vercel.app',
+    origin:'*',
   //  origin: 'http://localhost:5173',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
