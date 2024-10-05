@@ -59,7 +59,7 @@ api.post('/save-progress', async (req, res) => {
     try {
 
         await prisma.user.update({
-            where: { telegramId: telegramId },
+            where: { telegramId: Number(telegramId)  },
              data: {
                 points,
                 pointsPerClick, 
@@ -69,7 +69,7 @@ api.post('/save-progress', async (req, res) => {
         });
         res.status(200).send({ success: true });
     } catch (error) {
-        res.status(500).send({ error: 'Error saving progress' });
+        res.status(500).send({ error: 'Error saving progress', 'msg':error });
     }
 });
 
