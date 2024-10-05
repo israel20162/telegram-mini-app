@@ -56,6 +56,7 @@ api.post('/user', async (req, res) => {
 
 api.post('/save-progress', async (req, res) => {
     const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick } = req.body;
+    console.log(telegramId);
     try {
 
         await prisma.user.update({
