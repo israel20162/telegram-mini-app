@@ -47,10 +47,29 @@ api.post('/user', async (req, res) => {
             }
         });
 
-         res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: newUser.telegramId.toString() } });
+        res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: newUser.telegramId.toString() } });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
+    }
+});
+
+api.post('/save-progress', async (req, res) => {
+    const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick } = req.body;
+    try {
+
+        await prisma.user.update({
+            where: { telegramId: telegramId },
+             data: {
+                points,
+                pointsPerClick, 
+                energyBar,
+                upgradeLevelClick, 
+            }
+        });
+        res.status(200).send({ success: true });
+    } catch (error) {
+        res.status(500).send({ error: 'Error saving progress' });
     }
 });
 
