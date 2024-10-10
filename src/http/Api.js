@@ -22,12 +22,7 @@ api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
     const { telegramId } = req.body;
-    const json = (param) => {
-        return JSON.stringify(
-            param,
-            (key, value) => (typeof value === "bigint" ? value.toString() : value) // return everything else unchanged
-        );
-    };
+   
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
@@ -56,7 +51,7 @@ api.post('/user', async (req, res) => {
 
 api.post('/save-progress', async (req, res) => {
     const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick } = req.body;
-    console.log(telegramId);
+ 
     try {
 
         await prisma.user.update({

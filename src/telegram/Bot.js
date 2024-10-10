@@ -38,7 +38,7 @@ export function launchBot(token){
 function listenToCommands(bot) {
     // Register a listener for the /start command, and reply with a message whenever it's used
     bot.start(async (ctx) => {
-        ctx.reply("Welcome to MiniAppSample bot! Click on the button below to launch our mini app", {
+        ctx.reply("Welcome to Knight Coin bot! Click on the button below to launch our mini app", {
             reply_markup: {
                 inline_keyboard: [
                     /* Inline buttons. 2 side-by-side */
