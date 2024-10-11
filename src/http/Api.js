@@ -22,7 +22,7 @@ api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
     const { telegramId } = req.body;
-   
+
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
@@ -50,22 +50,26 @@ api.post('/user', async (req, res) => {
 });
 
 api.post('/save-progress', async (req, res) => {
-    const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick } = req.body;
- 
+    const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick, upgradeLevelEnergy, upgradeLevelRecharge, profitPerHour, rechargeSpeed } = req.body;
+
     try {
 
         await prisma.user.update({
-            where: { telegramId: Number(telegramId)  },
-             data: {
+            where: { telegramId: Number(telegramId) },
+            data: {
                 points,
-                pointsPerClick, 
+                pointsPerClick,
                 energyBar,
-                upgradeLevelClick, 
+                upgradeLevelClick,
+                upgradeLevelEnergy,
+                upgradeLevelRecharge,
+                profitPerHour,
+                rechargeSpeed
             }
         });
         res.status(200).send({ success: true });
     } catch (error) {
-        res.status(500).send({ error: 'Error saving progress', 'msg':error });
+        res.status(500).send({ error: 'Error saving progress', 'msg': error });
     }
 });
 
