@@ -15,21 +15,32 @@ datasource db {
 }
 
 model User {
-  id                   Int    @id @default(autoincrement()) // User ID, auto-incremented
-  telegramId           BigInt @unique
-  points               BigInt    @default(0) // Points earned by the user
-  invitedFriends       User[] @relation("FriendInvites") // Array of users (self-relation)
+  id                   Int     @id @default(autoincrement()) // User ID, auto-incremented
+  telegramId           BigInt  @unique
+  username             String?
+  points               BigInt  @default(0) // Points earned by the user
+  invitedFriends       User[]  @relation("FriendInvites") // Array of users (self-relation)
   completedTasks       Task[] // Array of completed tasks
-  profitPerHour        Int    @default(0)
-  pointsPerClick       Int    @default(1) // Points generated per click, default is 1
-  energyBar            Int    @default(1000) // Energy bar, starting value is 100
-  rechargeSpeed        Int    @default(1)
-  upgradeLevelClick    Int    @default(1) // Level of points per click upgrade
-  upgradeLevelEnergy   Int    @default(1) // Level of energy bar upgrade
-  upgradeLevelProfit   Int    @default(1) // Level of profit per hour upgrade
-  upgradeLevelRecharge Int    @default(1)
+  profitPerHour        Int     @default(0)
+  pointsPerClick       Int     @default(1) // Points generated per click, default is 1
+  energyBar            Int     @default(1000) // Energy bar, starting value is 100
+  rechargeSpeed        Int     @default(1)
+  referredBy           BigInt? // The telegramId of the user who referred them
+  upgradeLevelClick    Int     @default(1) // Level of points per click upgrade
+  upgradeLevelEnergy   Int     @default(1) // Level of energy bar upgrade
+  upgradeLevelProfit   Int     @default(1) // Level of profit per hour upgrade
+  upgradeLevelRecharge Int     @default(1)
 
-  User User[] @relation("FriendInvites")
+  User      User[]     @relation("FriendInvites")
+  referrals Referral[]
+}
+
+model Referral {
+  id                 Int     @id @default(autoincrement())
+  userId             BigInt
+  referredUser       User    @relation(fields: [userId], references: [telegramId])
+  referrerTelegramId BigInt // The Telegram ID of the user who referred
+  rewardClaimed      Boolean @default(false) // Track if the referrer has claimed the reward
 }
 
 model Task {

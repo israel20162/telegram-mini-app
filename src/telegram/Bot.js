@@ -11,7 +11,7 @@ import { message } from 'telegraf/filters'
  * Make sure to save the token in a safe and secure place. Anyone with the access can control your bot.
  *
  */
-export function launchBot(token){
+export function launchBot(token) {
     // Create a bot using the token received from @BotFather(https://t.me/BotFather)
     const bot = new Telegraf('7759859774:AAFsj1zRKaZocHnHzCOGohGykhEFnzkjSYU')
 
@@ -38,15 +38,49 @@ export function launchBot(token){
 function listenToCommands(bot) {
     // Register a listener for the /start command, and reply with a message whenever it's used
     bot.start(async (ctx) => {
-        ctx.reply("Welcome to Knight Coin bot! Click on the button below to launch our mini app", {
-            reply_markup: {
-                inline_keyboard: [
-                    /* Inline buttons. 2 side-by-side */
-                    [ { text: "Start Mini App", web_app: { url: process.env.APP_URL } } ],
-                ]
-            } 
-        })
-    }) 
+        const startPayload = ctx.message.text.split(' ')[1]; // Get the part after /start
+        const newUserId = ctx.from.id; // Telegram ID of the new user interacting with the bot
+        // Check if there's a 'fren' parameter
+        if (startPayload && startPayload.startsWith('fren=')) {
+            const referrerTelegramId = startPayload.split('=')[1]; // Extract the referrer Telegram ID
+
+            // Example: Save the new user and referrer to your database
+            await saveUserWithReferral(newUserId, referrerTelegramId);
+
+            ctx.reply(`Welcome to Knight Coin bot! Click on the button below to launch our mini app
+            You were invited by a friend!, Welcome to the game.`, {
+                reply_markup: {
+                    inline_keyboard: [
+                        /* Inline buttons. 2 side-by-side */
+                        [{ text: "Start Mini App", web_app: { url: process.env.APP_URL } }],
+                    ]
+                }
+            });
+
+        } else {
+            ctx.reply(`Welcome to Knight Coin bot! Click on the button below to launch our mini app`);
+        }
+        // ctx.reply("Welcome to Knight Coin bot! Click on the button below to launch our mini app", {
+        //     reply_markup: {
+        //         inline_keyboard: [
+        //             /* Inline buttons. 2 side-by-side */
+        //             [ { text: "Start Mini App", web_app: { url: process.env.APP_URL } } ],
+        //         ]
+        //     } 
+        // })
+    })
+
+    // Function to save user and referral information in the database
+    const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
+        await fetch(`/user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
+        });
+        console.log(`New user: ${newUserId}, referred by: ${referrerTelegramId}`);
+    };
 
     // Register a listener for the /help command, and reply with a message whenever it's used
     bot.help(async (ctx) => {
@@ -101,7 +135,7 @@ function listenToQueries(bot) {
         // Using context shortcut
         await ctx.answerInlineQuery(result)
     })
-} 
+}
 
 /**
  * Listens to process stop events and performs a graceful bot stop

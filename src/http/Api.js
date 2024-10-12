@@ -21,7 +21,7 @@ api.use(cors(corsOptions))
 api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
-    const { telegramId } = req.body;
+    const { telegramId, fren } = req.body;
 
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
@@ -33,14 +33,47 @@ api.post('/user', async (req, res) => {
         if (existingUser) {
             return res.status(201).send({ user: { ...existingUser, telegramId: existingUser.telegramId.toString() } });
         }
+        // If a 'fren' (referral) is provided, find the referrer
+        let referrer = null;
+        if (fren) {
+            referrer = await prisma.user.findUnique({
+                where: { telegramId: fren }
+            });
+
+            if (!referrer) {
+                return res.status(400).json({ error: 'Invalid referral code.' });
+            }
+        }
 
         // Create a new user
         const newUser = await prisma.user.create({
             data: {
                 telegramId,
+                referredBy: referrer ? referrer.telegramId : null, // Associate referrer if present
                 points: 0
             }
         });
+
+        // If there's a referrer, create the referral entry and reward the referrer
+        if (referrer) {
+            await prisma.referral.create({
+                data: {
+                    userId: newUser.telegramId, // New user who was referred
+                    referrerTelegramId: referrer.telegramId, // Referrer's Telegram ID
+                }
+            })
+            await prisma.user.update({
+                where: { telegramId: referrer.telegramId },
+                data: {
+                    points: {
+                        increment: 5000 // Give the referrer 5000 points for the referral
+                    },
+                    friendsInvited: {
+                        increment: 1 // Increment the referrer's friends invited count
+                    }
+                }
+            });
+        }
 
         res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: newUser.telegramId.toString() } });
     } catch (error) {
