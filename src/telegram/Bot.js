@@ -58,7 +58,14 @@ function listenToCommands(bot) {
             });
 
         } else {
-            ctx.reply(`Welcome to Knight Coin bot! Click on the button below to launch our mini app`);
+            ctx.reply(`Welcome to Knight Coin bot! Click on the button below to launch our mini app`, {
+                reply_markup: {
+                    inline_keyboard: [
+                        /* Inline buttons. 2 side-by-side */
+                        [{ text: "Start Mini App", web_app: { url: process.env.APP_URL } }],
+                    ]
+                }
+            });
         }
         // ctx.reply("Welcome to Knight Coin bot! Click on the button below to launch our mini app", {
         //     reply_markup: {
