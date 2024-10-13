@@ -17,7 +17,6 @@
     "prisma": "^5.20.0"
   },
   "dependencies": {
-   
     "@supabase/supabase-js": "^2.45.4",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
