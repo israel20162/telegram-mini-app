@@ -85,7 +85,7 @@ function listenToCommands(bot) {
 }
 // Function to save user and referral information in the database
 const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
-    await fetch(`/user`, {
+    await fetch(`https://telegram-mini-app-production.up.railway.app/user`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
