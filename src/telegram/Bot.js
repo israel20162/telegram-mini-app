@@ -77,23 +77,23 @@ function listenToCommands(bot) {
         // })
     })
 
-    // Function to save user and referral information in the database
-    const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
-        await fetch(`/user`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
-        });
-        console.log(`New user: ${newUserId}, referred by: ${referrerTelegramId}`);
-    };
-
+  
     // Register a listener for the /help command, and reply with a message whenever it's used
     bot.help(async (ctx) => {
         ctx.reply("Run the /start command to use our mini app")
     })
 }
+// Function to save user and referral information in the database
+const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
+    await fetch(`/user`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
+    });
+    console.log(`New user: ${newUserId}, referred by: ${referrerTelegramId}`);
+};
 
 /**
  * Assigns message listeners such as text and stickers
