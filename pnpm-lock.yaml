@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@prisma/client':
+        specifier: ^5.20.0
+        version: 5.20.0(prisma@5.20.0)
       '@supabase/supabase-js':
         specifier: ^2.45.4
         version: 2.45.4
@@ -44,6 +47,15 @@ importers:
         version: 5.20.0
 
 packages:
+
+  '@prisma/client@5.20.0':
+    resolution: {integrity: sha512-CLv55ZuMuUawMsxoqxGtLT3bEZoa2W8L3Qnp6rDIFWy+ZBrUcOFKdoeGPSnbBqxc3SkdxJrF+D1veN/WNynZYA==}
+    engines: {node: '>=16.13'}
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
 
   '@prisma/debug@5.20.0':
     resolution: {integrity: sha512-oCx79MJ4HSujokA8S1g0xgZUGybD4SyIOydoHMngFYiwEwYDQ5tBQkK5XoEHuwOYDKUOKRn/J0MEymckc4IgsQ==}
@@ -589,6 +601,10 @@ packages:
         optional: true
 
 snapshots:
+
+  '@prisma/client@5.20.0(prisma@5.20.0)':
+    optionalDependencies:
+      prisma: 5.20.0
 
   '@prisma/debug@5.20.0': {}
 
