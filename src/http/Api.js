@@ -31,7 +31,7 @@ api.post('/user', async (req, res) => {
         // Check if the user already exists
         let existingUser = await prisma.user.findUnique({ where: { telegramId: telegramId } })
         if (existingUser) {
-            return res.status(201).send({ user: { ...existingUser, telegramId: existingUser.telegramId.toString() } });
+            return res.status(201).send({ user: { ...existingUser } });
         }
         // If a 'fren' (referral) is provided, find the referrer
         let referrer = null;
@@ -75,7 +75,7 @@ api.post('/user', async (req, res) => {
             });
         }
 
-        res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: newUser.telegramId.toString() } });
+        res.status(200).json({ message: 'User created successfully', user: { ...newUser  } });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
