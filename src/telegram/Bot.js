@@ -19,7 +19,7 @@ export function launchBot(token) {
     listenToCommands(bot)
     listenToMessages(bot)
     listenToQueries(bot)
-
+ 
     // Launch the bot
     bot.launch().then(() => console.log('bot '))
 
