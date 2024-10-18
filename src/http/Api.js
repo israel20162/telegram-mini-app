@@ -80,7 +80,7 @@ api.post('/user', async (req, res) => {
         console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
     }
-});
+}); 
 
 api.post('/save-progress', async (req, res) => {
     const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick, upgradeLevelEnergy, upgradeLevelRecharge, profitPerHour, rechargeSpeed } = req.body;
