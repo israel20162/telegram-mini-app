@@ -72,7 +72,7 @@ api.post('/user', async (req, res) => {
                         increment: 1 // Increment the referrer's friends invited count
                     }
                 }
-            }); 
+            });  
         }
 
         res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: telegramId } });
