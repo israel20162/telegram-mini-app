@@ -75,7 +75,7 @@ api.post('/user', async (req, res) => {
             }); 
         }
 
-        res.status(200).json({ message: 'User created successfully', user: { newUser  } });
+        res.status(200).json({ message: 'User created successfully', user: { ...newUser  } });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
