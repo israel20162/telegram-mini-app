@@ -90,7 +90,7 @@ const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }, 
               body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
         });
         console.log(`New user: ${newUserId}, referred by: ${referrerTelegramId}`);
