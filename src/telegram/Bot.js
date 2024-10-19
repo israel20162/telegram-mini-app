@@ -1,4 +1,5 @@
 // Use require instead of import because of the error "Cannot use import statement outside a module"
+import { log } from 'console'
 import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
 
@@ -86,13 +87,15 @@ function listenToCommands(bot) {
 // Function to save user and referral information in the database
 const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
     try {
-        await fetch(`https://telegram-mini-app-production.up.railway.app/user`, {
+      const res=  await fetch(`https://telegram-mini-app-production.up.railway.app/user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             }, 
               body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
         });
+        const data = res.json()
+        console.log(data);
         console.log(`New user: ${newUserId}, referred by: ${referrerTelegramId}`);
     } catch (error) {
         console.error(error)
