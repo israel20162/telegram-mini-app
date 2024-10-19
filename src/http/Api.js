@@ -68,9 +68,7 @@ api.post('/user', async (req, res) => {
                     points: {
                         increment: 5000 // Give the referrer 5000 points for the referral
                     },
-                    friendsInvited: {
-                        increment: 1 // Increment the referrer's friends invited count
-                    }
+                  
                 }
             });  
         }
