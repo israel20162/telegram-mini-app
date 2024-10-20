@@ -62,7 +62,9 @@ api.post('/user', async (req, res) => {
         // If a 'fren' (referral) is provided, find the referrer
 
         if (fren) {
-
+            const referrer = await prisma.user.findUnique({
+                where: { telegramId: fren }
+            });
 
             if (!referrer) {
                 res.status(400).json({ error: 'Invalid referral code.' });
