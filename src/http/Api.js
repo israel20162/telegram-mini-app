@@ -15,13 +15,13 @@ var corsOptions = {
 }
 export const MESSAGE_PATH = "/message"
 // Setup HTTP api
-const api = express() 
+const api = express()
 api.use(express.json())
 api.use(cors(corsOptions))
 api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
-    const { telegramId, fren } = req.body;
+    const { telegramId, fren, username } = req.body;
     function toObject(obj) {
         return JSON.parse(JSON.stringify(obj, (key, value) =>
             typeof value === 'bigint'
@@ -37,6 +37,11 @@ api.post('/user', async (req, res) => {
         // Check if the user already exists
         let existingUser = await prisma.user.findUnique({ where: { telegramId: telegramId } })
         if (existingUser) {
+            await prisma.user.update({
+                data: {
+                    username: username
+                }
+            })
             return res.status(201).json({ user: toObject(existingUser) });
         }
 
@@ -49,13 +54,14 @@ api.post('/user', async (req, res) => {
             data: {
                 telegramId,
                 referredBy: referrer ? referrer.telegramId : null, // Associate referrer if present
-                points: 0
+                points: 0,
+                username: username
             }
         });
         // If a 'fren' (referral) is provided, find the referrer
 
         if (fren) {
-          
+
 
             if (!referrer) {
                 res.status(400).json({ error: 'Invalid referral code.' });
@@ -81,7 +87,7 @@ api.post('/user', async (req, res) => {
 
         }
 
-     
+
 
 
         res.status(200).json({ message: 'User created successfully', user: toObject(newUser) });
@@ -114,6 +120,29 @@ api.post('/save-progress', async (req, res) => {
         res.status(500).send({ error: 'Error saving progress', 'msg': error });
     }
 });
+
+api.get('get-friends/:telegramId', async (req, res) => {
+    const { telegramId } = req.params;
+    try {
+        // Find all users who were referred by the current user
+        const friends = await prisma.user.findMany({
+            where: {
+                referredBy: telegramId // Filter based on the 'referredBy' field
+            },
+            select: {
+                telegramId: true, // You can customize which fields to select
+                username: true,
+                points: true,
+                profitPerHour: true
+            }
+        });
+
+        res.status(200).json(friends);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+})
 
 
 
