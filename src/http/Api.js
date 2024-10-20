@@ -28,7 +28,7 @@ api.post('/user', async (req, res) => {
                 ? value.toString()
                 : value // return everything else unchanged
         ));
-    }
+    } 
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
