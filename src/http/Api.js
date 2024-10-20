@@ -146,7 +146,7 @@ api.get('get-friends/:telegramId', async (req, res) => {
                 referredBy: telegramId // Filter based on the 'referredBy' field
             },
             select: {
-                telegramId: true, // You can customize which fields to select
+                // telegramId: true, // You can customize which fields to select
                 username: true,
                 points: true,
                 profitPerHour: true
