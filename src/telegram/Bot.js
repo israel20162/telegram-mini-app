@@ -87,15 +87,16 @@ function listenToCommands(bot) {
 // Function to save user and referral information in the database
 const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
     try {
-      const res=  await fetch(`https://telegram-mini-app-production.up.railway.app/user`, {
+        // https://telegram-mini-app-production.up.railway.app
+        const res = await fetch(`https://telegram-mini-app-production.up.railway.app/user`, {
             method: 'POST',
-            headers: {
+            headers: { 
                 'Content-Type': 'application/json'
             }, 
               body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
         });
         const data = await res.json()
-        console.log(data);
+     
         console.log(`New user: ${newUserId}, referred by: ${referrerTelegramId}`);
     } catch (error) {
         console.error(error)

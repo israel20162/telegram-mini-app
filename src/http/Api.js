@@ -15,14 +15,20 @@ var corsOptions = {
 }
 export const MESSAGE_PATH = "/message"
 // Setup HTTP api
-const api = express()
+const api = express() 
 api.use(express.json())
 api.use(cors(corsOptions))
 api.use(bodyParser.json());
 
 api.post('/user', async (req, res) => {
     const { telegramId, fren } = req.body;
-
+    function toObject(obj) {
+        return JSON.parse(JSON.stringify(obj, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value // return everything else unchanged
+        ));
+    }
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
@@ -31,19 +37,12 @@ api.post('/user', async (req, res) => {
         // Check if the user already exists
         let existingUser = await prisma.user.findUnique({ where: { telegramId: telegramId } })
         if (existingUser) {
-            return res.status(201).send({ user: { ...existingUser ,telegramId:telegramId} });
+            return res.status(201).json({ user: toObject(existingUser) });
         }
-        // If a 'fren' (referral) is provided, find the referrer
-        let referrer = null;
-        if (fren) {
-            referrer = await prisma.user.findUnique({
-                where: { telegramId: fren }
-            });
 
-            if (!referrer) {
-                return res.status(400).json({ error: 'Invalid referral code.' });
-            }
-        }
+        const referrer = await prisma.user.findUnique({
+            where: { telegramId: fren }
+        });
 
         // Create a new user
         const newUser = await prisma.user.create({
@@ -53,32 +52,44 @@ api.post('/user', async (req, res) => {
                 points: 0
             }
         });
+        // If a 'fren' (referral) is provided, find the referrer
 
-        // If there's a referrer, create the referral entry and reward the referrer
-        if (referrer) {
-            await prisma.referral.create({
-                data: {
-                    userId: newUser.telegramId, // New user who was referred
-                    referrerTelegramId: referrer.telegramId, // Referrer's Telegram ID
-                }
-            })
-            await prisma.user.update({
-                where: { telegramId: referrer.telegramId },
-                data: {
-                    points: {
-                        increment: 5000 // Give the referrer 5000 points for the referral
-                    },
-                  
-                }
-            });  
+        if (fren) {
+          
+
+            if (!referrer) {
+                res.status(400).json({ error: 'Invalid referral code.' });
+            }
+            // If there's a referrer, create the referral entry and reward the referrer
+            if (referrer) {
+                await prisma.referral.create({
+                    data: {
+                        userId: newUser.telegramId, // New user who was referred
+                        referrerTelegramId: referrer.telegramId, // Referrer's Telegram ID
+                    }
+                })
+                await prisma.user.update({
+                    where: { telegramId: referrer.telegramId },
+                    data: {
+                        points: {
+                            increment: 5000 // Give the referrer 5000 points for the referral
+                        },
+
+                    }
+                });
+            }
+
         }
 
-        res.status(200).json({ message: 'User created successfully', user: { ...newUser, telegramId: telegramId } });
+     
+
+
+        res.status(200).json({ message: 'User created successfully', user: toObject(newUser) });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
     }
-}); 
+});
 
 api.post('/save-progress', async (req, res) => {
     const { telegramId, points, pointsPerClick, energyBar, upgradeLevelClick, upgradeLevelEnergy, upgradeLevelRecharge, profitPerHour, rechargeSpeed } = req.body;
