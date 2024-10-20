@@ -38,7 +38,7 @@ api.post('/user', async (req, res) => {
         let existingUser = await prisma.user.findUnique({ where: { telegramId: telegramId } })
         if (existingUser) {
             await prisma.user.update({
-              where:{telegramId:telegramId},
+                where: { telegramId:existingUser.telegramId},
               data:{
                 username:username
               }
