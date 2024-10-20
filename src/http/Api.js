@@ -28,7 +28,7 @@ api.post('/user', async (req, res) => {
                 ? value.toString()
                 : value // return everything else unchanged
         ));
-    } 
+    }
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
@@ -46,29 +46,28 @@ api.post('/user', async (req, res) => {
             return res.status(201).json({ user: toObject(existingUser) });
         }
 
-        const referrer = await prisma.user.findUnique({
-            where: { telegramId: fren }
-        });
+        let referrer
 
-        // Create a new user
-        const newUser = await prisma.user.create({
-            data: {
-                telegramId,
-                referredBy: referrer ? referrer.telegramId : null, // Associate referrer if present
-                points: 0,
-                username: username
-            }
-        });
+
         // If a 'fren' (referral) is provided, find the referrer
 
         if (fren) {
-            const referrer = await prisma.user.findUnique({
+            referrer = await prisma.user.findUnique({
                 where: { telegramId: fren }
             });
 
             if (!referrer) {
                 res.status(400).json({ error: 'Invalid referral code.' });
             }
+            // Create a new user
+            const newUser = await prisma.user.create({
+                data: {
+                    telegramId,
+                    referredBy: referrer ? referrer.telegramId : null, // Associate referrer if present
+                    points: 0,
+                    username: username
+                }
+            });
             // If there's a referrer, create the referral entry and reward the referrer
             if (referrer) {
                 await prisma.referral.create({
@@ -88,12 +87,26 @@ api.post('/user', async (req, res) => {
                 });
             }
 
+
+            res.status(200).json({ message: 'User created successfully', user: toObject(newUser) });
+
+        } else {
+            const newUser = await prisma.user.create({
+                data: {
+                    telegramId,
+                    referredBy: referrer ? referrer.telegramId : null, // Associate referrer if present
+                    points: 0,
+                    username: username
+                }
+            });
+
+            res.status(200).json({ message: 'User created successfully', user: toObject(newUser) });
         }
 
 
 
 
-        res.status(200).json({ message: 'User created successfully', user: toObject(newUser) });
+        //res.status(200).json({ message: 'User created successfully', user: toObject(newUser) });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Server error', msg: error });
