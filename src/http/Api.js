@@ -19,16 +19,16 @@ const api = express()
 api.use(express.json())
 api.use(cors(corsOptions))
 api.use(bodyParser.json());
-
+function toObject(obj) {
+    return JSON.parse(JSON.stringify(obj, (key, value) =>
+        typeof value === 'bigint'
+            ? value.toString()
+            : value // return everything else unchanged
+    ));
+}
 api.post('/user', async (req, res) => {
     const { telegramId, fren, username } = req.body;
-    function toObject(obj) {
-        return JSON.parse(JSON.stringify(obj, (key, value) =>
-            typeof value === 'bigint'
-                ? value.toString()
-                : value // return everything else unchanged
-        ));
-    }
+
     if (!telegramId) {
         return res.status(400).json({ error: 'Telegram ID is required' });
     }
@@ -137,7 +137,7 @@ api.post('/save-progress', async (req, res) => {
     }
 });
 
-api.get('get-friends/:telegramId', async (req, res) => {
+api.get('/get-friends/:telegramId', async (req, res) => {
     const { telegramId } = req.params;
     try {
         // Find all users who were referred by the current user
@@ -153,7 +153,7 @@ api.get('get-friends/:telegramId', async (req, res) => {
             }
         });
 
-        res.status(200).json(friends);
+        res.status(200).json(toObject(friends));
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Something went wrong' });

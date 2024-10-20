@@ -41,12 +41,13 @@ function listenToCommands(bot) {
     bot.start(async (ctx) => {
         const startPayload = ctx.message.text.split(' ')[1]; // Get the part after /start
         const newUserId = ctx.from.id; // Telegram ID of the new user interacting with the bot
+        const username = ctx.from.username
         // Check if there's a 'fren' parameter
         if (startPayload && startPayload.startsWith('fren=')) {
             const referrerTelegramId = startPayload.split('=')[1]; // Extract the referrer Telegram ID
 
             // Example: Save the new user and referrer to your database
-            await saveUserWithReferral(newUserId, referrerTelegramId);
+            await saveUserWithReferral(newUserId, referrerTelegramId, username);
 
             ctx.reply(`Welcome to Knight Coin bot! Click on the button below to launch our mini app
             You were invited by a friend!, Welcome to the game.`, {
@@ -77,7 +78,7 @@ function listenToCommands(bot) {
         //     } 
         // })
     })
-
+ 
 
     // Register a listener for the /help command, and reply with a message whenever it's used
     bot.help(async (ctx) => {
@@ -85,7 +86,7 @@ function listenToCommands(bot) {
     })
 }
 // Function to save user and referral information in the database
-const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
+const saveUserWithReferral = async (newUserId, referrerTelegramId, username) => {
     try {
         // https://telegram-mini-app-production.up.railway.app
         const res = await fetch(`https://telegram-mini-app-production.up.railway.app/user`, {
@@ -93,7 +94,7 @@ const saveUserWithReferral = async (newUserId, referrerTelegramId) => {
             headers: { 
                 'Content-Type': 'application/json'
             }, 
-              body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId })
+            body: JSON.stringify({ telegramId: newUserId, fren: referrerTelegramId, username: username })
         });
         const data = await res.json()
      
