@@ -33,6 +33,7 @@ model User {
 
   User      User[]     @relation("FriendInvites")
   referrals Referral[]
+  cards     UserCard[]
 }
 
 model Referral {
@@ -50,4 +51,38 @@ model Task {
   completedAt DateTime @default(now()) // When the task was completed
   userId      Int // Reference to the User who completed the task
   user        User     @relation(fields: [userId], references: [id]) // Foreign key to User
+}
+
+model Card {
+  id               String       @id @default(uuid())
+  title            String
+  imageUrl         String // URL or path to the image
+  basePrice        Int // Base price to unlock the card
+  baseProfit       Int // Base profit per hour
+  profitMultiplier Float // Multiplier for profit per level
+  priceMultiplier  Float // Multiplier for price per level
+  category         CardCategory
+
+  // Relations
+  users UserCard[]
+}
+
+model UserCard {
+  id           String @id @default(uuid())
+  userId       BigInt
+  cardId       String
+  upgradeLevel Int    @default(1) // Tracks the level of the card the user has upgraded to
+
+  // Relations
+  user User @relation(fields: [userId], references: [telegramId])
+  card Card @relation(fields: [cardId], references: [id])
+
+  @@unique([userId, cardId]) // Ensure the same user cannot unlock the same card multiple times
+}
+
+enum CardCategory {
+  COURAGE
+  WISDOM
+  HONOR
+  SHADOWS
 }

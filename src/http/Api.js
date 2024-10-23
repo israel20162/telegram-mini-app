@@ -160,6 +160,18 @@ api.get('/get-friends/:telegramId', async (req, res) => {
     }
 })
 
+api.get('/get-card/all', async (req, res) => {
+   
+    try {
+        const cards = await prisma.card.findMany()
+        res.status(200).json(toObject(cards));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+})
+
+
 
 
 // Listen to server start on port

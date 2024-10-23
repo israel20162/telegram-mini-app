@@ -41,7 +41,7 @@ function listenToCommands(bot) {
     bot.start(async (ctx) => {
         const startPayload = ctx.message.text.split(' ')[1]; // Get the part after /start
         const newUserId = ctx.from.id; // Telegram ID of the new user interacting with the bot
-        const username = ctx.from.username
+        const username = ctx.from.username || ctx.from.first_name
         // Check if there's a 'fren' parameter
         if (startPayload && startPayload.startsWith('fren=')) {
             const referrerTelegramId = startPayload.split('=')[1]; // Extract the referrer Telegram ID
