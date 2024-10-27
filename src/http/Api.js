@@ -161,7 +161,6 @@ api.get('/get-friends/:telegramId', async (req, res) => {
 })
 
 api.get('/get-card/all', async (req, res) => {
-   
     try {
         const cards = await prisma.card.findMany()
         res.status(200).json(toObject(cards));
@@ -171,6 +170,38 @@ api.get('/get-card/all', async (req, res) => {
     }
 })
 
+
+
+api.get('/get-card/:userId/:cardId', async (req, res) => {
+    const { userId, cardId } = req.params
+    try {
+        // Find the user card entry
+        const userCard = await prisma.userCard.findUnique({
+            where: {
+                userId_cardId: {
+                    userId,
+                    cardId,
+                },
+            },
+            select: {
+                upgradeLevel: true,
+            },
+        });
+
+        if (!userCard) {
+            // Card not found, meaning the user hasn't unlocked it
+            res.status(201).send({ unlocked: false })
+        }
+
+        // Card is unlocked, return the level
+        res.status(201).send({ unlocked: true, level: userCard.upgradeLevel })
+    } catch (error) {
+        console.error('Error fetching user card level:', error);
+        res.status(500).send('Failed to fetch user card level')
+        
+    }
+}
+)
 
 
 

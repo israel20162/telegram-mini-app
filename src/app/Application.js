@@ -9,7 +9,7 @@ import {launchApi, MESSAGE_PATH} from "../http/Api.js";
 export function launchApp() {
     // Read token from .env file and use it to launch telegram bot
     const bot = launchBot('7759859774:AAFsj1zRKaZocHnHzCOGohGykhEFnzkjSYU')
-
+ 
     // Launch api 
     const api = launchApi()
 

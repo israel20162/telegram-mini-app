@@ -56,6 +56,7 @@ model Task {
 model Card {
   id               String       @id @default(uuid())
   title            String
+  description      String?
   imageUrl         String // URL or path to the image
   basePrice        Int // Base price to unlock the card
   baseProfit       Int // Base profit per hour
