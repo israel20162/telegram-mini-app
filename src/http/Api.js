@@ -174,8 +174,14 @@ api.get('/get-unlocked-cards/:userId', async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const unlockedCards = await getUnlockedCards(userId);
-        res.json(unlockedCards);
+        const unlockedCards = await prisma.userCard.findMany({
+            where: { userId },
+            select: {
+                cardId: true,
+                upgradeLevel: true,
+            },
+        });
+        res.status(200).json(unlockedCards);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch unlocked cards' });
     }
