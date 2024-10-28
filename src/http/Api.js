@@ -213,12 +213,88 @@ api.get('/get-card/:userId/:cardId', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user card level:', error);
         res.status(500).send('Failed to fetch user card level')
-        
+
     }
 }
 )
 
+// Unlock a card for the user
+app.post('/unlock-card', async (req, res) => {
 
+    const { cardId, userId } = req.body;
+
+    try {
+        // Check if the card is already unlocked
+        const existingCard = await prisma.userCard.findUnique({
+            where: { userId_cardId: { userId, cardId } },
+        });
+
+        if (existingCard) {
+            return res.status(400).json({ message: 'Card already unlocked' });
+        }
+
+        // Unlock the card with an initial level of 1
+        const unlockedCard = await prisma.userCard.create({
+            data: {
+                userId,
+                cardId,
+                upgradeLevel: 1,
+            },
+        });
+
+        res.status(201).json(unlockedCard);
+    } catch (error) {
+        console.error('Error unlocking card:', error);
+        res.status(500).json({ error: 'Failed to unlock card' });
+    }
+});
+
+// Upgrade a user's card
+app.post('/user/:userId/upgrade-card', async (req, res) => {
+    const { userId } = req.params;
+    const { cardId, cost } = req.body;
+
+    try {
+        // Check if the card is unlocked
+        const userCard = await prisma.userCard.findUnique({
+            where: { userId_cardId: { userId, cardId } },
+        });
+
+        if (!userCard) {
+            return res.status(400).json({ message: 'Card not unlocked' });
+        }
+
+        // Ensure user has enough points (assuming `user.points` exists)
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { points: true },
+        });
+
+        if (!user || user.points < cost) {
+            return res.status(400).json({ message: 'Insufficient points' });
+        }
+
+        // Deduct points and upgrade card level
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                points: { decrement: cost },
+            },
+        });
+
+        const upgradedCard = await prisma.userCard.update({
+            where: { userId_cardId: { userId, cardId } },
+            data: {
+                upgradeLevel: { increment: 1 },
+            },
+        });
+
+        res.status(201).json({ updatedUser, upgradedCard });
+    } catch (error) {
+        console.error('Error upgrading card:', error);
+        res.status(500).json({ error: 'Failed to upgrade card' });
+    }
+});
 
 // Listen to server start on port
 api.listen(PORT, () => console.log(`express is up on port ${PORT}`))
