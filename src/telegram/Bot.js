@@ -1,5 +1,4 @@
 // Use require instead of import because of the error "Cannot use import statement outside a module"
-import { log } from 'console'
 import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
 
@@ -48,7 +47,7 @@ function listenToCommands(bot) {
         if (startPayload && startPayload.startsWith('fren=')) {
             const referrerTelegramId = startPayload.split('=')[1]; // Extract the referrer Telegram ID
 
-            // Example: Save the new user and referrer to your database
+            //  Save the new user and referrer to your database
             await saveUserWithReferral(newUserId, referrerTelegramId, username);
 
             ctx.reply(`Welcome to Knight Coin bot! Click on the button below to launch our mini app

@@ -170,7 +170,16 @@ api.get('/get-card/all', async (req, res) => {
     }
 })
 
+api.get('/get-unlocked-cards/:userId', async (req, res) => {
+    const { userId } = req.params;
 
+    try {
+        const unlockedCards = await getUnlockedCards(userId);
+        res.json(unlockedCards);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch unlocked cards' });
+    }
+});
 
 api.get('/get-card/:userId/:cardId', async (req, res) => {
     const { userId, cardId } = req.params
