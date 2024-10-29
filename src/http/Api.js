@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import { createClient } from '@supabase/supabase-js'
-import { prisma } from './prisma.js';
+import { prisma } from './prisma.mjs';
 const supabaseUrl = 'https://ljtjkdhtecpvzbdlzjbi.supabase.co'
 const supabaseKey = process.env.SUPABASE_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
