@@ -6,7 +6,7 @@ import { message } from 'telegraf/filters'
  * Creates and launches Telegram bot, and assigns all the required listeners
  *
  * @param token HTTP API token received from @BotFather(https://t.me/BotFather) after creating a bot
- *
+ * 
  * @remarks
  * Make sure to save the token in a safe and secure place. Anyone with the access can control your bot.
  *
